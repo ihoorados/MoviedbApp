@@ -9,7 +9,7 @@ import Foundation
 
 struct ImageProvider: Endpoint {
 
-    init(imagePath: String, width: Int) {
+    init(imagePath: String, width: Int = 500) {
         
         self.path = "t/p/w\(width)" + imagePath
     }
