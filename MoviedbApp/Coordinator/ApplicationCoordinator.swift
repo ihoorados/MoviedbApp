@@ -15,5 +15,9 @@ final class ApplicationCoordinator {
         self.navigationController = navigationController
     }
 
-    func start() {}
+    func start() {
+        
+        let flow = MoviesSearchFlowCoordinator(navigationController: self.navigationController)
+        flow.start()
+    }
 }
