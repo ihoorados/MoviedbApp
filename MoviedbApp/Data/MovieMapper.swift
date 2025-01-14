@@ -58,7 +58,7 @@ extension MoviesResponseDTO.MovieDTO {
             return formatter
         }()
         
-        return .init(id: Movie.Identifier(id), title: title, posterPath: posterPath, overview: overview, releaseDate: dateFormatter.date(from: releaseDate ?? ""))
+        return .init(id: Movie.Identifier(id), title: title, posterPath: posterPath, overview: overview, releaseDate: dateFormatter.date(from: releaseDate ?? ""), voteCount: voteCount, voteAvrage: voteAvrage)
     }
 
 }

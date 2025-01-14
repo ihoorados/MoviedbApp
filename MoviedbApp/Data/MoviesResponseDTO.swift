@@ -35,6 +35,7 @@ extension MoviesResponseDTO {
         let overview: String?
         let releaseDate: String?
         let voteCount: Int
+        let voteAvrage: Double
         
         private enum CodingKeys: String, CodingKey {
             case id
@@ -43,6 +44,7 @@ extension MoviesResponseDTO {
             case overview
             case releaseDate = "release_date"
             case voteCount = "vote_count"
+            case voteAvrage = "vote_average"
         }
     }
     
