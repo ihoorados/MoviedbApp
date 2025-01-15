@@ -225,4 +225,6 @@ class MoviesUseCaseMock: SearchMoviesUseCase {
     }
 }
 
-class MoviesSearchCoordinatorMock: MoviesSearchCoordinator {}
+class MoviesSearchCoordinatorMock: MoviesSearchCoordinator {
+    func onShowMovieDetails(movie: MoviedbApp.Movie) {}
+}
