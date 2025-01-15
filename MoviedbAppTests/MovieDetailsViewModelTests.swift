@@ -6,6 +6,8 @@
 //
 
 import XCTest
+import Combine
+@testable import MoviedbApp
 
 final class MovieDetailsViewModelTests: XCTestCase {
 
@@ -32,4 +34,20 @@ final class MovieDetailsViewModelTests: XCTestCase {
         }
     }
 
+}
+
+// MARK: Mocks
+
+class MockImageRepository: ImageRepository {
+    
+    // Array to hold multiple pages of movies to simulate various responses.
+    var results: AnyPublisher<Data, Error>?
+
+    func getImageData(path: String, width: Int) -> AnyPublisher<Data, Error> {
+
+        guard let results = results else{
+            return Fail(error: NSError()).eraseToAnyPublisher()
+        }
+        return results
+    }
 }
