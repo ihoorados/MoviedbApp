@@ -31,6 +31,31 @@ final class MoviesListViewModelTests: XCTestCase {
         self.coordinatorMock = nil
         super.tearDown()
     }
+    
+    func testWhenSearchMoviesUseCaseRecivedEmptyMovies() {
+        
+        // Arrange
+        let expectedMoviesPage = MoviesPage(page: 1, totalPages: 1, movies: [])
+        moviesUseCaseMock.results = [expectedMoviesPage]
+
+        // Act When
+        viewModel.didSearch(query: "Test") // Initiate the search
+        
+        // Subscribe to items to assess the state after calling didSearch
+        viewModel.$items
+            .dropFirst()
+            .sink { [weak self] item in
+                
+                guard let self = self else { return }
+                
+                // Then Assert
+                XCTAssertEqual(self.viewModel.state, .empty) // Ensure empty state
+                XCTAssertEqual(self.viewModel.items.count, 0) // Check that we have zero item now
+                XCTAssertFalse(self.viewModel.hasMorePages) // Check that we have no more page
+                XCTAssertEqual(self.viewModel.currentPage, 1) // Check current page
+            }
+            .store(in: &subscribers)
+    }
 
 }
 
