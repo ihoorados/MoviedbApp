@@ -11,27 +11,23 @@ import Combine
 
 final class MovieDetailsViewModelTests: XCTestCase {
 
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
+    func testInitializationAndData() {
+        
+        // Arrange
+        let movie = Movie(id: "1",
+                          title: "Test Movie",
+                          posterPath: "/path/to/image.jpg",
+                          overview: "A great movie",
+                          releaseDate: Date(),voteCount: 1,voteAvrage: 12)
+        
+        // Act
+        let viewModel = MovieDetailsViewModel(movie: movie)
 
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
-
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
-    }
-
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
+        // Assert
+        XCTAssertEqual(viewModel.title, "Test Movie")
+        XCTAssertEqual(viewModel.overview, "A great movie")
+        XCTAssertNotNil(viewModel.releaseDate)
+        XCTAssertEqual(viewModel.imagePath, "/path/to/image.jpg")
     }
 
 }
