@@ -72,11 +72,33 @@ typealias TableViewDataSourceAndDelegate = UITableViewDelegate & UITableViewData
 
 extension MoviesListViewController: TableViewDataSourceAndDelegate{
     
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 0
+        
+        self.viewModel.items.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return UITableViewCell()
+        
+        // Check for reusable cell
+        guard let cell = self.tableView.dequeueReusableCell(withIdentifier: MoviesListViewController.reuseIdentifier, for: indexPath) as? MovieTableViewCell else{
+            
+            return UITableViewCell()
+        }
+
+        // Update current cell data
+        cell.update(with: viewModel.items[indexPath.row], repository: imageRepository)
+
+        // Check for update new page
+        if indexPath.row == viewModel.items.count - 1 {
+            self.viewModel.didLoadNext()
+        }
+
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        self.viewModel.didSelectItem(at: indexPath.row)
     }
 }
