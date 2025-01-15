@@ -7,13 +7,16 @@
 
 import UIKit
 
-protocol MoviesSearchCoordinator: AnyObject{}
+protocol MoviesSearchCoordinator: AnyObject{
+    
+    func onShowMovieDetails(movie: Movie)
+}
 
 final class MoviesSearchFlowCoordinator: MoviesSearchCoordinator{
     
     private weak var navigationController: UINavigationController?
     private weak var moviesQueriesSuggestionsVC: UIViewController?
-    private weak var rootVC: MoviesListViewController?
+    private var rootVC: MoviesListViewController?
 
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
@@ -21,9 +24,11 @@ final class MoviesSearchFlowCoordinator: MoviesSearchCoordinator{
     
     func start() {
         
-        let vc = MoviesListViewController()
+        let vc = ApplicationDIFactory.create(coordinator: self)
         navigationController?.pushViewController(vc, animated: false)
         rootVC = vc
     }
+    
+    func onShowMovieDetails(movie: Movie){}
 
 }
