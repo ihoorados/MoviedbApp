@@ -97,6 +97,16 @@ class MoviesListViewController: UIViewController {
         
         tableView.reloadData()
     }
+    
+    private func setupLoadingController(){
+        
+        self.tableViewLoadingSpinner?.removeFromSuperview()
+        self.tableViewLoadingSpinner = self.makeActivityIndicator(size: .init(width: self.view.frame.width, height: 44), style: .large)
+        self.view.addSubview(self.tableViewLoadingSpinner!)
+        self.tableViewLoadingSpinner?.translatesAutoresizingMaskIntoConstraints = false
+        self.tableViewLoadingSpinner?.centerXAnchor.constraint(equalTo: self.view.centerXAnchor, constant: 0.0).isActive = true
+        self.tableViewLoadingSpinner?.centerYAnchor.constraint(equalTo: self.view.centerYAnchor, constant: 0.0).isActive = true
+    }
 
 
 }
