@@ -52,8 +52,7 @@ final class MoviesListViewModel{
     
     private(set) var currentPage: Int = 0
     private(set) var totalPageCount: Int = 1
-
-
+    private(set) var moviesList: [MoviesPage] = []
 
     
 }
