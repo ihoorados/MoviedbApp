@@ -6,6 +6,7 @@
 //
 
 import Combine
+import Foundation
 
 final class MoviesListViewModel{
     
@@ -54,5 +55,29 @@ final class MoviesListViewModel{
     private(set) var totalPageCount: Int = 1
     private(set) var moviesList: [MoviesPage] = []
 
+    private var subscribers = Set<AnyCancellable>()
+
+    // MARK: Private Functions
     
+    private func loadData(query: String, state: MoviesListViewModelState) {
+        
+        self.state = state
+        self.query = query
+
+        self.moviesUseCase.perform(query: query, page: nextPage)
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { completion in
+            }, receiveValue: { [weak self] result in
+
+                if result.movies.count > 0{
+                    
+                    self?.state = .result
+                }else{
+                    
+                    self?.state = .empty
+                }
+
+            })
+            .store(in: &subscribers)
+    }
 }
