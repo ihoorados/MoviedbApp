@@ -19,5 +19,15 @@ final class MoviesListViewModel{
         self.moviesUseCase = moviesUseCase
     }
     
+    // MARK: State
+    
+    enum MoviesListViewModelState {
+        
+        case nextPage
+        case loading
+        case empty
+        case result
+        case none
+    }
     
 }
