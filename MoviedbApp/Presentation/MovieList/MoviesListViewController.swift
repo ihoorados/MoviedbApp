@@ -52,15 +52,20 @@ class MoviesListViewController: UIViewController {
         return label
     }()
 
+    // MARK: Life cycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
         self.setupUIView()
         self.setupSearchController()
+        self.bind(to: self.viewModel)
     }
     
 
+    // MARK: Private Functions
+    
     private func setupUIView(){
         
         self.view.backgroundColor = .systemBackground
@@ -106,6 +111,69 @@ class MoviesListViewController: UIViewController {
         self.tableViewLoadingSpinner?.translatesAutoresizingMaskIntoConstraints = false
         self.tableViewLoadingSpinner?.centerXAnchor.constraint(equalTo: self.view.centerXAnchor, constant: 0.0).isActive = true
         self.tableViewLoadingSpinner?.centerYAnchor.constraint(equalTo: self.view.centerYAnchor, constant: 0.0).isActive = true
+    }
+    
+    // MARK: Binding
+    
+    private func bind(to viewModel: MoviesListViewModel){
+        
+        viewModel.$items
+           .receive(on: DispatchQueue.main)
+           .sink { [weak self] items in
+               self?.tableView.reloadData()
+           }
+           .store(in: &subscriptions)
+        
+        viewModel.$query
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] query in
+                
+                self?.searchController.isActive = false
+                self?.searchController.searchBar.text = query
+            }
+            .store(in: &subscriptions)
+        
+        viewModel.$state
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] state in
+                
+                switch state{
+                    
+                case .nextPage:
+                    
+                    guard let self = self else { return }
+                    self.tableViewLoadingSpinner?.removeFromSuperview()
+                    self.tableViewLoadingSpinner = makeActivityIndicator(size: .init(width: self.tableView.frame.width, height: 44), style: .medium)
+                    self.tableView.tableFooterView = tableViewLoadingSpinner
+
+                case .loading:
+                    
+                    self?.setupLoadingController()
+                    self?.centerMessageLabel.isHidden = true
+
+                case .empty:
+                    
+                    self?.tableViewLoadingSpinner?.removeFromSuperview()
+                    self?.centerMessageLabel.text = "Empty result"
+                    self?.centerMessageLabel.isHidden = false
+                    // Show Empty Result
+                    
+                case .result:
+                    
+                    self?.tableView.tableFooterView = nil
+                    self?.tableViewLoadingSpinner?.removeFromSuperview()
+                    self?.centerMessageLabel.isHidden = true
+                    
+                case .none:
+                    
+                    self?.tableView.tableFooterView = nil
+                    self?.tableViewLoadingSpinner?.removeFromSuperview()
+                    self?.centerMessageLabel.text = "Search result"
+                    self?.centerMessageLabel.isHidden = false
+                }
+            }
+            .store(in: &subscriptions)
+        
     }
 
 
