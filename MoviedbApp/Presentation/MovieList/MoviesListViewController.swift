@@ -174,8 +174,23 @@ class MoviesListViewController: UIViewController {
             }
             .store(in: &subscriptions)
         
+        viewModel.$error
+            .dropFirst()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] error in
+                
+                self?.setupAlert(message: error)
+            }
+            .store(in: &subscriptions)
+        
     }
 
+    func setupAlert(title: String = "Error", message: String) {
+        
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+    }
 
 }
 
