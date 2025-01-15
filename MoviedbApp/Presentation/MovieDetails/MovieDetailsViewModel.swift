@@ -66,3 +66,13 @@ final class MovieDetailsViewModel{
     }
     
 }
+
+// MARK: ViewModel Input Trigger
+
+extension MovieDetailsViewModel{
+    
+    func loadImage(width: Int){
+        
+        self.updateImage(width: width)
+    }
+}
