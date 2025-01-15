@@ -39,17 +39,17 @@ class MovieTableViewCell: UITableViewCell {
         self.repository = repository
         self.movieImageView.image = nil
         guard let path = viewModel.imagePath else { return }
-        self.updateImage(path: path, with: 72)
+        self.updateImage(path: path, width: 500)
     }
     
-    func updateImage(path: String, with: Int){
+    func updateImage(path: String, width: Int){
         
         if self.cancellables != nil{
             
             cancellables?.cancel()
         }
         
-        self.cancellables = self.repository?.getImageData(path: path, width: with)
+        self.cancellables = self.repository?.getImageData(path: path, width: width)
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in
                 switch completion {
