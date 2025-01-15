@@ -123,4 +123,54 @@ final class MoviesListViewModel{
         // Additional error handling logic can be implemented here if needed.
         // For example, you can log error metrics.
     }
+    
+    /// and resetting relevant properties to their initial values.
+    private func resetData() {
+        
+        // Cancel all active subscriptions to prevent unwanted callbacks.
+        self.subscribers.forEach { $0.cancel() }
+        
+        // Reset the current page to 0 to indicate there are no pages loaded.
+        self.currentPage = 0
+        
+        // Set the total page count to 1, indicating that no additional pages are available.
+        self.totalPageCount = 1
+        
+        // Clear all movie entries from the movies list.
+        self.moviesList.removeAll()
+        
+        // Clear all items in the items array, which may represent UI elements.
+        self.items.removeAll()
+        
+        // Set the state to `.none`, indicating no active operations or data loading.
+        self.state = .none
+    }
+}
+
+
+
+// MARK: ViewModel Input Trigger
+
+extension MoviesListViewModel{
+    
+    func didSearch(query: String){
+        
+        self.resetData()
+        self.loadData(query: query, state: .loading)
+    }
+    
+    func didSelectItem(at index: Int) {}
+    
+    func didLoadNext(){
+        
+        // Check for availble pages
+        guard self.hasMorePages, self.state == .result else { return }
+        self.loadData(query: self.query, state: .nextPage)
+    }
+    
+    func didCancelSearch(){
+        
+        self.subscribers.forEach({ $0.cancel() })
+        self.resetData()
+    }
 }
