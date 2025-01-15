@@ -11,27 +11,25 @@ import Combine
 
 final class MoviesListViewModelTests: XCTestCase {
 
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
+    var viewModel: MoviesListViewModel!
+    var moviesUseCaseMock: MoviesUseCaseMock!
+    var coordinatorMock: MoviesSearchCoordinatorMock!
+    private var subscribers = Set<AnyCancellable>()
 
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+    override func setUp() {
+        super.setUp()
+        
+        self.coordinatorMock = MoviesSearchCoordinatorMock()
+        self.moviesUseCaseMock = MoviesUseCaseMock()
+        self.viewModel = MoviesListViewModel(coordinator: coordinatorMock, moviesUseCase: moviesUseCaseMock)
     }
-
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
-    }
-
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
+    
+    override func tearDown() {
+        
+        self.viewModel = nil
+        self.moviesUseCaseMock = nil
+        self.coordinatorMock = nil
+        super.tearDown()
     }
 
 }
@@ -70,3 +68,5 @@ class MoviesUseCaseMock: SearchMoviesUseCase {
             .eraseToAnyPublisher() // Erase to a generic publisher type.
     }
 }
+
+class MoviesSearchCoordinatorMock: MoviesSearchCoordinator {}
