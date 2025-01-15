@@ -14,7 +14,7 @@ final class RemoteMoviesRepository: MoviesRepository {
     private var subscribers = Set<AnyCancellable>()
     private let backgroundQueue = DispatchQueue.global(qos: .userInitiated)
 
-    init(client: HTTPClient = AuthenticatedHTTPClientDecorator(client: URLSession.shared)) {
+    init(client: HTTPClient) {
         
         self.client = client
     }

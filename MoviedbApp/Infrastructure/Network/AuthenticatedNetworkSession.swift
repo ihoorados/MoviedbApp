@@ -14,17 +14,17 @@ class AuthenticatedHTTPClientDecorator: HTTPClient{
     private let apiConfig: ApiConfig
     private let client: HTTPClient
 
-    init(client: HTTPClient, apiConfig: ApiConfig = ApiConfig()) {
+    init(client: HTTPClient, apiConfig: ApiConfig) {
         self.client = client
         self.apiConfig = apiConfig
     }
 
     func publisher(_ request: URLRequest) -> AnyPublisher<(Data, HTTPURLResponse), Error> {
 
-        let apiKey = apiConfig.apiKey
+        let token = apiConfig.accessTokenAuth
         var signRequest = request
         signRequest.allHTTPHeaderFields?.removeValue(forKey: "Authorization")
-        signRequest.addValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
+        signRequest.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         return client.publisher(signRequest)
             .eraseToAnyPublisher()
     }
