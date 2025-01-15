@@ -21,7 +21,11 @@ final class MoviesSearchFlowCoordinator: MoviesSearchCoordinator{
     
     func start() {
         
-        let vc = MoviesListViewController()
+        let remoteImageRepository = RemoteImageRepository()
+        let remoteMoviesRepository = RemoteMoviesRepository()
+        let useCase = SearchMoviesUseCaseFlow(repository: remoteMoviesRepository)
+        let viewModel = MoviesListViewModel(coordinator: self, moviesUseCase: useCase)
+        let vc = MoviesListViewController(viewModel: viewModel, imageRepository: remoteImageRepository)
         navigationController?.pushViewController(vc, animated: false)
         rootVC = vc
     }
