@@ -75,5 +75,64 @@ final class CoreDataImagesStorage {
         }
     }
 
+}
 
+extension CoreDataImagesStorage: ImagesStorage {
+    
+    func fetch(for urlPath: String) -> AnyPublisher<Data, Error> {
+        
+        return Future<Data, Error> { [weak self] promise in
+            self?.coreDataStorage.performBackgroundTask { context in
+                
+                guard let self = self else { return }
+                do {
+                    let fetchRequest = self.fetchRequest(for: urlPath)
+                    let entity = try context.fetch(fetchRequest).first
+                    
+                    // Update the last used date
+                    entity?.lastUsedAt = self.currentTime()
+                    
+                    // Save the context
+                    try context.save()
+                    
+                    // Ensure entity's data exists and send success
+                    if let data = entity?.data {
+                        
+                        promise(.success(data)) // Emit data on success
+                    } else {
+                        
+                        let error = NSError(domain: "", code: 1, userInfo: [NSLocalizedDescriptionKey: "Network error"])
+                        // Emit an error if data is nil
+                        promise(.failure(CoreDataStorageError.readError(error)))
+                    }
+                } catch {
+                    
+                    // Emit error on failure
+                    promise(.failure(CoreDataStorageError.readError(error)))
+                }
+            }
+        }
+        .eraseToAnyPublisher() // Convert to AnyPublisher<Data, Error>
+    }
+    
+    func save(imageData: Data, for urlPath: String) {
+        
+        coreDataStorage.performBackgroundTask { context in
+            do {
+                
+                self.deleteImage(for: urlPath, in: context)
+                
+                let entity: ImageEntity = .init(context: context)
+                entity.data = imageData
+                entity.pathUrl = urlPath
+                entity.lastUsedAt = self.currentTime()
+                
+                try context.save()
+                
+            } catch {
+                assertionFailure("CoreDataUsersStorage Unresolved error \(error), \((error as NSError).userInfo)")
+            }
+        }
+    }
+    
 }
