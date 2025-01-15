@@ -35,7 +35,7 @@ final class MoviesListViewModel{
     
     // MARK: Published Properties
 
-    @Published var items: [Movie] = []
+    @Published var items: [MovieCellViewModel] = []
     @Published var state: MoviesListViewModelState = .none
     @Published var query: String = ""
     @Published var error: String = ""
@@ -107,7 +107,9 @@ final class MoviesListViewModel{
         self.moviesList = self.moviesList.filter { $0.page != movies.page } + [movies]
         
         // Flatten the list of movies extracted from all pages into a single array
-        self.items = self.moviesList.flatMap { $0.movies }
+        let allMovies = self.moviesList.flatMap { $0.movies }
+        self.items = allMovies.map(MovieCellViewModel.init)
+
     }
     
     /// Handles errors that occur during data fetching or processing.
