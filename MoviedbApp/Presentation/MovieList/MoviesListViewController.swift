@@ -57,6 +57,7 @@ class MoviesListViewController: UIViewController {
 
         // Do any additional setup after loading the view.
         self.setupUIView()
+        self.setupSearchController()
     }
     
 
@@ -81,6 +82,15 @@ class MoviesListViewController: UIViewController {
         self.centerMessageLabel.translatesAutoresizingMaskIntoConstraints = false
         self.centerMessageLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
         self.centerMessageLabel.centerYAnchor.constraint(equalTo: self.view.centerYAnchor).isActive = true
+    }
+    
+    private func setupSearchController() {
+        
+        self.searchController.obscuresBackgroundDuringPresentation = false
+        self.searchController.searchBar.placeholder = self.viewModel.searchBarPlaceholder
+        self.searchController.searchBar.delegate = self
+        self.searchController.searchBar.delegate = self
+        self.navigationItem.searchController = self.searchController
     }
     
     private func reload() {
@@ -123,5 +133,29 @@ extension MoviesListViewController: TableViewDataSourceAndDelegate{
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         self.viewModel.didSelectItem(at: indexPath.row)
+    }
+}
+
+
+
+extension MoviesListViewController: UISearchBarDelegate, UISearchResultsUpdating {
+    
+    func updateSearchResults(for searchController: UISearchController) {
+        
+        guard let searchText = searchController.searchBar.text, !searchText.isEmpty else { return }
+        searchController.isActive = false
+        self.viewModel.didSearch(query: searchText)
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        
+        guard let searchText = searchBar.text, !searchText.isEmpty else { return }
+        self.searchController.isActive = false
+        self.viewModel.didSearch(query: searchText)
+    }
+
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        
+        self.viewModel.didCancelSearch()
     }
 }
