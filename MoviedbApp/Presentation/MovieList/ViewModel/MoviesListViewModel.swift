@@ -120,7 +120,7 @@ final class MoviesListViewModel{
         self.state = .none
         
         // Store the localized error message for potential UI display.
-        self.error = error.localizedDescription
+        self.error = error.isInternetConnectionError ? "Check internet connection" : "Failed to requet movies"
         
         // Additional error handling logic can be implemented here if needed.
         // For example, you can log error metrics.
