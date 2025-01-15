@@ -59,6 +59,7 @@ final class MoviesListViewModel{
 
     // MARK: Private Functions
     
+    /// Perform the movie fetching use case with the given query and page number.
     private func loadData(query: String, state: MoviesListViewModelState) {
         
         self.state = state
@@ -66,18 +67,60 @@ final class MoviesListViewModel{
 
         self.moviesUseCase.perform(query: query, page: nextPage)
             .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { completion in
+            .sink(receiveCompletion: { [weak self] completion in
+                
+                // Handle completion of the data fetch.
+                switch completion {
+                case .finished: break
+                    // Successfully finished; no further action required in this case.
+                case .failure(let error):
+                    // Handle errors by calling a dedicated error handling method.
+                    self?.onError(with: error)
+                }
             }, receiveValue: { [weak self] result in
 
-                if result.movies.count > 0{
+                if result.movies.isEmpty{
                     
                     self?.state = .result
                 }else{
                     
                     self?.state = .empty
                 }
+                
+                // Update the movies list with the fetched data regardless of the count.
+                self?.updateData(movies: result)
 
             })
             .store(in: &subscribers)
+    }
+    
+    /// Updates the local movie data with the information from the provided `MoviesPage`.
+    /// - Parameter movies: The `MoviesPage` instance containing the new data to update.
+    private func updateData(movies: MoviesPage) {
+        
+        // Update the current page and total page count with the new movies data.
+        self.currentPage = movies.page
+        self.totalPageCount = movies.totalPages
+
+        // Filter out any existing movie pages that match the incoming movie's page
+        // and append the new `MoviesPage` to the movies list.
+        self.moviesList = self.moviesList.filter { $0.page != movies.page } + [movies]
+        
+        // Flatten the list of movies extracted from all pages into a single array
+        self.items = self.moviesList.flatMap { $0.movies }
+    }
+    
+    /// Handles errors that occur during data fetching or processing.
+    /// - Parameter error: The error encountered, providing context for handling.
+    private func onError(with error: Error) {
+        
+        // Reset the state to indicate no active operations are taking place.
+        self.state = .none
+        
+        // Store the localized error message for potential UI display.
+        self.error = error.localizedDescription
+        
+        // Additional error handling logic can be implemented here if needed.
+        // For example, you can log error metrics.
     }
 }
