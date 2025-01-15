@@ -105,5 +105,14 @@ class MovieDetailsViewController: UIViewController {
         self.verticalStackView.addArrangedSubview(self.voteLabel)
         self.verticalStackView.addArrangedSubview(self.overViewTextView)
     }
+    
+    private func updateData(with viewModel: MovieDetailsViewModel){
+        
+        self.titleLabel.text = viewModel.title
+        self.releaseDateLabel.text = viewModel.releaseDate
+        self.overViewTextView.text = viewModel.overview
+        self.voteLabel.text = viewModel.vote
+        // ImageView Place Holder
+    }
 
 }
