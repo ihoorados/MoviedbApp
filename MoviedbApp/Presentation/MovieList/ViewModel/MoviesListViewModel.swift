@@ -8,17 +8,22 @@
 import Combine
 import Foundation
 
+struct MoviesListViewModelCallBack {
+
+    let onShowMovieDetails: (Movie) -> Void
+}
+
 final class MoviesListViewModel{
     
     
     // MARK: Dependency
     
-    weak var coordinator: MoviesSearchCoordinator?
+    private var callBack: MoviesListViewModelCallBack?
     private let moviesUseCase: SearchMoviesUseCase
     
-    init(coordinator: MoviesSearchCoordinator, moviesUseCase: SearchMoviesUseCase) {
+    init(callBack: MoviesListViewModelCallBack, moviesUseCase: SearchMoviesUseCase) {
         
-        self.coordinator = coordinator
+        self.callBack = callBack
         self.moviesUseCase = moviesUseCase
     }
     
@@ -120,7 +125,7 @@ final class MoviesListViewModel{
         self.state = .none
         
         // Store the localized error message for potential UI display.
-        self.error = error.localizedDescription
+        self.error = error.isInternetConnectionError ? "Check internet connection" : "Failed to requet movies"
         
         // Additional error handling logic can be implemented here if needed.
         // For example, you can log error metrics.
@@ -161,7 +166,11 @@ extension MoviesListViewModel{
         self.loadData(query: query, state: .loading)
     }
     
-    func didSelectItem(at index: Int) {}
+    func didSelectItem(at index: Int) {
+        
+        let movies = self.moviesList.flatMap { $0.movies }
+        self.callBack?.onShowMovieDetails(movies[index])
+    }
     
     func didLoadNext(){
         

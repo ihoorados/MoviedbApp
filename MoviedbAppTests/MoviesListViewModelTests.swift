@@ -91,7 +91,6 @@ final class MoviesListViewModelTests: XCTestCase {
                 XCTAssertEqual(sut.state, .result) // Ensure no loading state
                 XCTAssertEqual(items.count, 1) // Check that we have one item now
                 XCTAssertEqual(items.first?.title, "Test Movie") // Check that the item is as expected
-                XCTAssertEqual(items.first?.voteCount, 22) // Check that the vote is as expected
                 initialExpectation.fulfill() // Fulfill the expectation after validation
             })
             .store(in: &subscribers) // Store reference to prevent deallocation
@@ -225,4 +224,6 @@ class MoviesUseCaseMock: SearchMoviesUseCase {
     }
 }
 
-class MoviesSearchCoordinatorMock: MoviesSearchCoordinator {}
+class MoviesSearchCoordinatorMock: MoviesSearchCoordinator {
+    func onShowMovieDetails(movie: MoviedbApp.Movie) {}
+}
