@@ -48,7 +48,7 @@ final class MovieDetailsViewModelTests: XCTestCase {
         
         guard let sampleData = "testImageData".data(using: .utf8) else { return }
         let mockImageRepository = MockImageRepository()
-                mockImageRepository.results = Result.success(sampleData).publisher.eraseToAnyPublisher()
+        mockImageRepository.results = Result.success(sampleData).publisher.eraseToAnyPublisher()
         
         let sut = MovieDetailsViewModel(movie: movie, repository: mockImageRepository)
 
