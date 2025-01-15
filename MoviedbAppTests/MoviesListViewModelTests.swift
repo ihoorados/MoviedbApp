@@ -56,6 +56,31 @@ final class MoviesListViewModelTests: XCTestCase {
             }
             .store(in: &subscribers)
     }
+    
+    func testWhenSearchMoviesUseCaseRecivedMoviesAndUpdatesStateAndItems() {
+        
+        // Arrange
+        let expectedMoviesPage = MoviesPage(page: 1, totalPages: 1, movies: [Movie(id: "1", title: "Test Movie", posterPath: nil, overview: nil, releaseDate: nil, voteCount: 22, voteAvrage: 6.5)])
+        moviesUseCaseMock.results = [expectedMoviesPage]
+        
+        // Act
+        viewModel.didSearch(query: "Test") // Initiate the search
+
+        // Subscribe to items to assess the state after calling didSearch
+        viewModel.$items
+            .dropFirst() // Skip the initial state
+            .sink { [weak self] items in
+                
+                guard let self = self else { return }
+                
+                // Assert
+                XCTAssertEqual(self.viewModel.state, .result) // Ensure no loading state
+                XCTAssertEqual(items.count, 1) // Check that we have one item now
+                XCTAssertEqual(items.first?.title, "Test Movie") // Check that the item is as expected
+                XCTAssertEqual(items.first?.voteCount, 22) // Check that the vote is as expected
+            }
+            .store(in: &subscribers) // Store reference to prevent deallocation
+    }
 
 }
 
