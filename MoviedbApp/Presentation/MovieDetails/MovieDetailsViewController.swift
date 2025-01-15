@@ -81,6 +81,10 @@ class MovieDetailsViewController: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        self.setupUIView()
+        self.updateData(with: self.viewModel)
+        self.bind(to: self.viewModel)
+        self.viewModel.loadImage(width: 500)
     }
     
     // MARK: Private Functions
@@ -121,7 +125,7 @@ class MovieDetailsViewController: UIViewController {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] data in
 
-                guard let data = data else {                    
+                guard let data = data else {
                     return
                 }
                 self?.movieImageView.image = UIImage(data: data)
