@@ -5,4 +5,19 @@
 //  Created by Hoorad on 1/14/25.
 //
 
-final class MoviesListViewModel{}
+final class MoviesListViewModel{
+    
+    
+    // MARK: Dependency
+    
+    private let coordinator: MoviesSearchCoordinator
+    private let moviesUseCase: SearchMoviesUseCase
+    
+    init(coordinator: MoviesSearchCoordinator, moviesUseCase: SearchMoviesUseCase) {
+        
+        self.coordinator = coordinator
+        self.moviesUseCase = moviesUseCase
+    }
+    
+    
+}
