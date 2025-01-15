@@ -79,7 +79,7 @@ final class MoviesListViewModel{
                 }
             }, receiveValue: { [weak self] result in
 
-                if result.movies.isEmpty{
+                if !result.movies.isEmpty{
                     
                     self?.state = .result
                 }else{
