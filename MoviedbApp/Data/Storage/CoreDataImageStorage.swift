@@ -34,6 +34,46 @@ final class CoreDataImagesStorage {
         request.predicate = NSPredicate(format: "%K = %@", #keyPath(ImageEntity.pathUrl), pathUrl)
         return request
     }
+    
+    private func deleteImage(for urlPath: String, in context: NSManagedObjectContext) {
+        
+        let request = fetchRequest(for: urlPath)
+        do {
+            if let result = try context.fetch(request).first {
+                context.delete(result)
+            }
+        } catch {
+            print(error)
+        }
+    }
+    
+    static func removeLeastRecentlyUsedImages() {
+        
+        CoreDataStorage.shared.performBackgroundTask { context in
+            
+            do {
+                let fetchRequest: NSFetchRequest = ImageEntity.fetchRequest()
+                
+                let sort = NSSortDescriptor(key: #keyPath(ImageEntity.lastUsedAt), ascending: false)
+                fetchRequest.sortDescriptors = [sort]
+                
+                let entities = try context.fetch(fetchRequest)
+                
+                var totalSizeUsed = 0
+                entities.forEach { entity in
+                    totalSizeUsed += (entity.data as? NSData)?.length ?? 0
+                    print(totalSizeUsed)
+                    if totalSizeUsed > self.maxSizeInBytes {
+                        context.delete(entity)
+                    }
+                }
+
+                try context.save()
+            } catch {
+                assertionFailure("CoreDataStorage Unresolved error \(error), \((error as NSError).userInfo)")
+            }
+        }
+    }
 
 
 }
