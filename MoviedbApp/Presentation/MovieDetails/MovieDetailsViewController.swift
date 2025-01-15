@@ -114,5 +114,19 @@ class MovieDetailsViewController: UIViewController {
         self.voteLabel.text = viewModel.vote
         // ImageView Place Holder
     }
+    
+    private func bind(to viewModel: MovieDetailsViewModel){
+        
+        viewModel.$image
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] data in
+
+                guard let data = data else {                    
+                    return
+                }
+                self?.movieImageView.image = UIImage(data: data)
+            }
+            .store(in: &subscriptions)
+    }
 
 }
