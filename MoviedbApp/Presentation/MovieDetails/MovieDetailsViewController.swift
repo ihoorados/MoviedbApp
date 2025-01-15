@@ -8,6 +8,20 @@
 import UIKit
 
 class MovieDetailsViewController: UIViewController {
+    
+    // MARK: Dependency
+    
+    private var viewModel: MovieDetailsViewModel
+    
+    init(viewModel: MovieDetailsViewModel) {
+        
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("Storyboard are a pain")
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
