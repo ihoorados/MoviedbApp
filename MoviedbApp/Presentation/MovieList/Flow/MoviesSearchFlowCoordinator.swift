@@ -7,13 +7,16 @@
 
 import UIKit
 
-protocol MoviesSearchCoordinator: AnyObject{}
+protocol MoviesSearchCoordinator: AnyObject{
+    
+    func onShowMovieDetails(movie: Movie)
+}
 
 final class MoviesSearchFlowCoordinator: MoviesSearchCoordinator{
     
     private weak var navigationController: UINavigationController?
     private weak var moviesQueriesSuggestionsVC: UIViewController?
-    private weak var rootVC: MoviesListViewController?
+    private var rootVC: MoviesListViewController?
 
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
@@ -21,13 +24,11 @@ final class MoviesSearchFlowCoordinator: MoviesSearchCoordinator{
     
     func start() {
         
-        let remoteImageRepository = RemoteImageRepository()
-        let remoteMoviesRepository = RemoteMoviesRepository()
-        let useCase = SearchMoviesUseCaseFlow(repository: remoteMoviesRepository)
-        let viewModel = MoviesListViewModel(coordinator: self, moviesUseCase: useCase)
-        let vc = MoviesListViewController(viewModel: viewModel, imageRepository: remoteImageRepository)
+        let vc = ApplicationDIFactory.create(coordinator: self)
         navigationController?.pushViewController(vc, animated: false)
         rootVC = vc
     }
+    
+    func onShowMovieDetails(movie: Movie){}
 
 }
