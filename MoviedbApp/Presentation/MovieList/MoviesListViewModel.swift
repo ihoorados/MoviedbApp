@@ -46,4 +46,14 @@ final class MoviesListViewModel{
     var centerTitle: String { return "Search results" }
     var errorTitle: String { return "Error" }
     var searchBarPlaceholder: String { return "Type something here to search" }
+    
+    var hasMorePages: Bool { currentPage < totalPageCount }
+    var nextPage: Int { hasMorePages ? currentPage + 1 : currentPage }
+    
+    private(set) var currentPage: Int = 0
+    private(set) var totalPageCount: Int = 1
+
+
+
+    
 }
