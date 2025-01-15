@@ -29,6 +29,10 @@ final class MoviesSearchFlowCoordinator: MoviesSearchCoordinator{
         rootVC = vc
     }
     
-    func onShowMovieDetails(movie: Movie){}
+    func onShowMovieDetails(movie: Movie){
+        
+        let vc = ApplicationDIFactory.create(with: movie)
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
 
 }

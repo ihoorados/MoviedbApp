@@ -161,7 +161,11 @@ extension MoviesListViewModel{
         self.loadData(query: query, state: .loading)
     }
     
-    func didSelectItem(at index: Int) {}
+    func didSelectItem(at index: Int) {
+        
+        let movies = self.moviesList.flatMap { $0.movies }
+        self.coordinator?.onShowMovieDetails(movie: movies[index])
+    }
     
     func didLoadNext(){
         

@@ -15,4 +15,11 @@ final class ApplicationDIFactory {
         let viewModel = MoviesListViewModel(coordinator: coordinator, moviesUseCase: useCase)
         return MoviesListViewController(viewModel: viewModel, imageRepository: remoteImageRepository)
     }
+    
+    static func create(with movie: Movie) -> MovieDetailsViewController {
+        
+        let viewModel = MovieDetailsViewModel.init(movie: movie)
+        let viewController = MovieDetailsViewController(viewModel: viewModel)
+        return viewController
+    }
 }
