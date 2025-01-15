@@ -41,4 +41,28 @@ final class MovieDetailsViewModel{
     
     @Published var image: Data? = nil
     
+    private func updateImage(width: Int){
+        
+        guard let imagePath = self.imagePath else { return }
+        
+        if self.cancellables != nil { self.cancellables?.cancel() }
+        
+        self.cancellables = self.repository.getImageData(path: imagePath, width: width)
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    // Image download completed successfully
+                    break
+                case .failure(let error):
+                    // Handle download failure
+                    print("Image download failed: \(error)")
+                }
+            }, receiveValue: { [weak self] imageData in
+                // Process the downloaded image data
+                self?.image = imageData
+            })
+        
+    }
+    
 }
