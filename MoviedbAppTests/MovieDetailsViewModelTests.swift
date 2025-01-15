@@ -11,6 +11,17 @@ import Combine
 
 final class MovieDetailsViewModelTests: XCTestCase {
 
+    private var subscribers = Set<AnyCancellable>()
+
+    override func setUp() {
+        super.setUp()
+    }
+    
+    override func tearDown() {
+        super.tearDown()
+    }
+    
+    
     func testInitializationAndData() {
         
         // Arrange
@@ -21,14 +32,48 @@ final class MovieDetailsViewModelTests: XCTestCase {
                           releaseDate: Date(),voteCount: 1,voteAvrage: 12)
         
         // Act
-        let viewModel = MovieDetailsViewModel(movie: movie)
+        let sut = MovieDetailsViewModel(movie: movie)
 
         // Assert
-        XCTAssertEqual(viewModel.title, "Test Movie")
-        XCTAssertEqual(viewModel.overview, "A great movie")
-        XCTAssertNotNil(viewModel.releaseDate)
-        XCTAssertEqual(viewModel.imagePath, "/path/to/image.jpg")
+        XCTAssertEqual(sut.title, "Test Movie")
+        XCTAssertEqual(sut.overview, "A great movie")
+        XCTAssertNotNil(sut.releaseDate)
+        XCTAssertEqual(sut.imagePath, "/path/to/image.jpg")
     }
+    
+    func testLoadImageSuccess() {
+        
+        // Arrange
+        let movie = Movie(id: "1", title: "Test Movie", posterPath: "/path/to/image.jpg", overview: "A great movie", releaseDate: nil, voteCount: 1 , voteAvrage: 1)
+        
+        guard let sampleData = "testImageData".data(using: .utf8) else { return }
+        let mockImageRepository = MockImageRepository()
+                mockImageRepository.results = Result.success(sampleData).publisher.eraseToAnyPublisher()
+        
+        let sut = MovieDetailsViewModel(movie: movie, repository: mockImageRepository)
+
+
+        let expectation = XCTestExpectation(description: "Expect image to be loaded successfully.")
+
+        // Subscribe to image updates
+        sut.$image
+            .dropFirst() // Skip the initial nil value
+            .sink { imageData in
+                
+                // Assert
+                XCTAssertNotNil(imageData)
+                XCTAssertEqual(imageData, sampleData)
+                expectation.fulfill()
+            }
+            .store(in: &subscribers)
+
+        // Act
+        sut.loadImage(width: 500)
+
+        // Wait for expectations
+        wait(for: [expectation], timeout: 2.0)
+    }
+    
 
 }
 
