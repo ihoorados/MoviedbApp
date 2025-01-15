@@ -83,15 +83,27 @@ class MovieDetailsViewController: UIViewController {
         // Do any additional setup after loading the view.
     }
     
+    // MARK: Private Functions
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    private func setupUIView(){
+        
+        self.view.backgroundColor = .systemBackground
+        self.view.addSubview(self.verticalStackView)
+        self.verticalStackView.translatesAutoresizingMaskIntoConstraints = false
+        self.verticalStackView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 0).isActive = true
+        self.verticalStackView.leftAnchor.constraint(equalTo: self.view.leftAnchor, constant: 0).isActive = true
+        self.verticalStackView.rightAnchor.constraint(equalTo: self.view.rightAnchor, constant: 0).isActive = true
+        self.verticalStackView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 0).isActive = true
+        
+        self.movieImageView.translatesAutoresizingMaskIntoConstraints = false
+        self.movieImageView.heightAnchor.constraint(equalToConstant: 200).isActive = true
+        self.movieImageView.backgroundColor = .lightGray
+        
+        self.verticalStackView.addArrangedSubview(self.movieImageView)
+        self.verticalStackView.addArrangedSubview(self.titleLabel)
+        self.verticalStackView.addArrangedSubview(self.releaseDateLabel)
+        self.verticalStackView.addArrangedSubview(self.voteLabel)
+        self.verticalStackView.addArrangedSubview(self.overViewTextView)
     }
-    */
 
 }
