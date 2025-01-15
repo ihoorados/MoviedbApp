@@ -8,17 +8,22 @@
 import Combine
 import Foundation
 
+struct MoviesListViewModelCallBack {
+
+    let onShowMovieDetails: (Movie) -> Void
+}
+
 final class MoviesListViewModel{
     
     
     // MARK: Dependency
     
-    weak var coordinator: MoviesSearchCoordinator?
+    private var callBack: MoviesListViewModelCallBack?
     private let moviesUseCase: SearchMoviesUseCase
     
-    init(coordinator: MoviesSearchCoordinator, moviesUseCase: SearchMoviesUseCase) {
+    init(callBack: MoviesListViewModelCallBack, moviesUseCase: SearchMoviesUseCase) {
         
-        self.coordinator = coordinator
+        self.callBack = callBack
         self.moviesUseCase = moviesUseCase
     }
     
@@ -164,7 +169,7 @@ extension MoviesListViewModel{
     func didSelectItem(at index: Int) {
         
         let movies = self.moviesList.flatMap { $0.movies }
-        self.coordinator?.onShowMovieDetails(movie: movies[index])
+        self.callBack?.onShowMovieDetails(movies[index])
     }
     
     func didLoadNext(){

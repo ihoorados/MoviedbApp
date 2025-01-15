@@ -7,31 +7,28 @@
 
 import UIKit
 
-protocol MoviesSearchCoordinator: AnyObject{
+final class MoviesSearchFlowCoordinator{
     
-    func onShowMovieDetails(movie: Movie)
-}
-
-final class MoviesSearchFlowCoordinator: MoviesSearchCoordinator{
-    
+    private let dependencies: MoviesSearchFlowCoordinatorDependencies
+    private weak var rootVC: MoviesListViewController?
     private weak var navigationController: UINavigationController?
-    private weak var moviesQueriesSuggestionsVC: UIViewController?
-    private var rootVC: MoviesListViewController?
 
-    init(navigationController: UINavigationController) {
+    init(navigationController: UINavigationController, dependencies: MoviesSearchFlowCoordinatorDependencies) {
         self.navigationController = navigationController
+        self.dependencies = dependencies
     }
     
     func start() {
         
-        let vc = ApplicationDIFactory.create(coordinator: self)
+        let callBackAction = MoviesListViewModelCallBack(onShowMovieDetails: onShowMovieDetails(movie:))
+        let vc = dependencies.makeMoviesListViewController(callBack: callBackAction)
         navigationController?.pushViewController(vc, animated: false)
         rootVC = vc
     }
     
     func onShowMovieDetails(movie: Movie){
         
-        let vc = ApplicationDIFactory.create(with: movie)
+        let vc = dependencies.makeMoviesDetailsViewController(movie: movie)
         self.navigationController?.pushViewController(vc, animated: true)
     }
 

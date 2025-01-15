@@ -11,7 +11,6 @@ import Foundation
 /// A struct responsible for mapping JSON data received from a movie API into a model representation.
 struct MovieMapper {
     
-    /// An error type for handling invalid JSON decoding scenarios.
     struct InvalidJSONDecoder: Error {}
 
     /// Maps the received data and HTTP response to a `MoviesResponseDTO` instance.
