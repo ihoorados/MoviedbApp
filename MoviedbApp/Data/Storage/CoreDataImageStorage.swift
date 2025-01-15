@@ -25,4 +25,15 @@ final class CoreDataImagesStorage {
         self.currentTime = currentTime
     }
 
+    
+    // MARK: - Private Function
+
+    private func fetchRequest(for pathUrl: String) -> NSFetchRequest<ImageEntity> {
+
+        let request: NSFetchRequest = ImageEntity.fetchRequest()
+        request.predicate = NSPredicate(format: "%K = %@", #keyPath(ImageEntity.pathUrl), pathUrl)
+        return request
+    }
+
+
 }
