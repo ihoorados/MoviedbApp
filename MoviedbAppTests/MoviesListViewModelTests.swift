@@ -81,6 +81,19 @@ final class MoviesListViewModelTests: XCTestCase {
             }
             .store(in: &subscribers) // Store reference to prevent deallocation
     }
+    
+    func testWhenUseCaseStartAndUpdateLoadingStateAndResetData() {
+        
+        // Arrange
+        let expectedMoviesPage = MoviesPage(page: 1, totalPages: 1, movies: [Movie(id: "1", title: "Test Movie", posterPath: nil, overview: nil, releaseDate: nil, voteCount: 22, voteAvrage: 6.5)])
+        moviesUseCaseMock.results = [expectedMoviesPage]
+        
+        // Act
+        viewModel.didSearch(query: "Test") // Initiate the search
+        
+        XCTAssertEqual(self.viewModel.state, .loading) // Ensure loading state
+        XCTAssertTrue(viewModel.items.isEmpty) // Check that we have zero item now
+    }
 
 }
 
