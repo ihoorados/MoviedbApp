@@ -63,8 +63,31 @@ class MoviesListViewController: UIViewController {
     private func setupUIView(){
         
         self.view.backgroundColor = .systemBackground
-        self.title = "Search Movie"
+        self.title = self.viewModel.screenTitle
+        
+        self.tableView.rowHeight = UITableView.automaticDimension
+        self.tableView.estimatedRowHeight = 200
+        self.view.backgroundColor = .systemBackground
+        self.view.addSubview(self.tableView)
+        self.tableView.translatesAutoresizingMaskIntoConstraints = false
+        self.tableView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 0).isActive = true
+        self.tableView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 0).isActive = true
+        self.tableView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: 0).isActive = true
+        self.tableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 0).isActive = true
+        self.tableView.register(UINib(nibName: "MovieTableViewCell", bundle: nil), forCellReuseIdentifier: "MovieTableViewCell")
+        
+        self.centerMessageLabel.text = self.viewModel.centerTitle
+        self.view.addSubview(self.centerMessageLabel)
+        self.centerMessageLabel.translatesAutoresizingMaskIntoConstraints = false
+        self.centerMessageLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        self.centerMessageLabel.centerYAnchor.constraint(equalTo: self.view.centerYAnchor).isActive = true
     }
+    
+    private func reload() {
+        
+        tableView.reloadData()
+    }
+
 
 }
 
