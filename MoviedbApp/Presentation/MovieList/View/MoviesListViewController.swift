@@ -169,7 +169,10 @@ class MoviesListViewController: UIViewController {
                     self?.tableView.tableFooterView = nil
                     self?.tableViewLoadingSpinner?.removeFromSuperview()
                     self?.centerMessageLabel.text = "Search result"
-                    self?.centerMessageLabel.isHidden = false
+                    guard let isEmptyItem = self?.viewModel.items.isEmpty else{
+                        return
+                    }
+                    self?.centerMessageLabel.isHidden = !isEmptyItem
                 }
             }
             .store(in: &subscriptions)

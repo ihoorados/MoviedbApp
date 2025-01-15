@@ -30,15 +30,16 @@ final class MoviesListViewModelTests: XCTestCase {
         super.tearDown()
     }
     
+    let callBackMock = MoviesListViewModelCallBack { _ in}
+    
     func testWhenSearchMoviesUseCaseRecivedEmptyMovies() {
         
         // Arrange
-        let coordinatorMock = MoviesSearchCoordinatorMock()
         let moviesUseCaseMock = MoviesUseCaseMock()
         let expectedMoviesPage = MoviesPage(page: 1, totalPages: 1, movies: [])
         moviesUseCaseMock.results = Just(expectedMoviesPage).setFailureType(to: Error.self).eraseToAnyPublisher()
         
-        let sut = MoviesListViewModel(coordinator: coordinatorMock, moviesUseCase: moviesUseCaseMock)
+        let sut = MoviesListViewModel(callBack: callBackMock, moviesUseCase: moviesUseCaseMock)
         
         // Create an expectation for the empty state after search
         let expectation = XCTestExpectation(description: "Expect empty state after searching for movies.")
@@ -68,11 +69,10 @@ final class MoviesListViewModelTests: XCTestCase {
     func testWhenSearchMoviesUseCaseRecivedMoviesAndUpdatesStateAndItems() {
         
         // Arrange
-        let coordinatorMock = MoviesSearchCoordinatorMock()
         let moviesUseCaseMock = MoviesUseCaseMock()
         let expectedMoviesPage = MoviesPage(page: 1, totalPages: 1, movies: [Movie(id: "1", title: "Test Movie", posterPath: nil, overview: nil, releaseDate: nil, voteCount: 22, voteAvrage: 6.5)])
         moviesUseCaseMock.results = CurrentValueSubject(expectedMoviesPage).eraseToAnyPublisher()
-        let sut = MoviesListViewModel(coordinator: coordinatorMock, moviesUseCase: moviesUseCaseMock)
+        let sut = MoviesListViewModel(callBack: callBackMock, moviesUseCase: moviesUseCaseMock)
 
         // Act
         sut.didSearch(query: "Test") // Initiate the search
@@ -102,11 +102,10 @@ final class MoviesListViewModelTests: XCTestCase {
     func testWhenUseCaseStartAndUpdateLoadingStateAndResetData() {
         
         // Arrange
-        let coordinatorMock = MoviesSearchCoordinatorMock()
         let moviesUseCaseMock = MoviesUseCaseMock()
         let expectedMoviesPage = MoviesPage(page: 1, totalPages: 1, movies: [Movie(id: "1", title: "Test Movie", posterPath: nil, overview: nil, releaseDate: nil, voteCount: 22, voteAvrage: 6.5)])
         moviesUseCaseMock.results = CurrentValueSubject(expectedMoviesPage).eraseToAnyPublisher()
-        let sut = MoviesListViewModel(coordinator: coordinatorMock, moviesUseCase: moviesUseCaseMock)
+        let sut = MoviesListViewModel(callBack: callBackMock, moviesUseCase: moviesUseCaseMock)
         
         // Act
         sut.didSearch(query: "Test") // Initiate the search
@@ -118,10 +117,9 @@ final class MoviesListViewModelTests: XCTestCase {
     func testDidLoadNextPageAndLoadMoreMovies() {
         
         // Arrange
-        let coordinatorMock = MoviesSearchCoordinatorMock()
         let moviesUseCaseMock = MoviesUseCaseMock()
         moviesUseCaseMock.results = Result.success(moviePages[0]).publisher.eraseToAnyPublisher()
-        let sut = MoviesListViewModel(coordinator: coordinatorMock, moviesUseCase: moviesUseCaseMock)
+        let sut = MoviesListViewModel(callBack: callBackMock, moviesUseCase: moviesUseCaseMock)
             
         // Create expectation to wait for initial items to be updated
         let initialExpectation = XCTestExpectation(description: "Expect initial movies to be loaded.")
@@ -169,11 +167,10 @@ final class MoviesListViewModelTests: XCTestCase {
     func testWhenSearchMoviesUseCaseRecivedError() {
         
         // Arrange
-        let coordinatorMock = MoviesSearchCoordinatorMock()
         let moviesUseCaseMock = MoviesUseCaseMock()
         moviesUseCaseMock.results = Fail(error: NSError(domain: "Network error", code: 1, userInfo: [NSLocalizedDescriptionKey: "Network error"]) ).eraseToAnyPublisher() // Simulate an error
         
-        let sut = MoviesListViewModel(coordinator: coordinatorMock, moviesUseCase: moviesUseCaseMock)
+        let sut = MoviesListViewModel(callBack: callBackMock, moviesUseCase: moviesUseCaseMock)
         
         // Create an expectation for the error handling after search
         let expectation = XCTestExpectation(description: "Expect error handling after searching for movies.")
@@ -188,7 +185,7 @@ final class MoviesListViewModelTests: XCTestCase {
                 
                 // Then Assert
                 XCTAssertEqual(sut.state, .none) // Ensure empty state
-                XCTAssertEqual(error, "Network error")
+                XCTAssertEqual(error, "Failed to requet movies")
                 
                 // Fulfill the expectation
                 expectation.fulfill()
@@ -222,8 +219,6 @@ class MoviesUseCaseMock: SearchMoviesUseCase {
         }
         return results
     }
-}
-
-class MoviesSearchCoordinatorMock: MoviesSearchCoordinator {
-    func onShowMovieDetails(movie: MoviedbApp.Movie) {}
+    
+    func onShowMovieDetails(movie: Movie){}
 }
