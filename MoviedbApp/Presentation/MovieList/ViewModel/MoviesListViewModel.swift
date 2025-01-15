@@ -13,7 +13,7 @@ final class MoviesListViewModel{
     
     // MARK: Dependency
     
-    private let coordinator: MoviesSearchCoordinator
+    weak var coordinator: MoviesSearchCoordinator?
     private let moviesUseCase: SearchMoviesUseCase
     
     init(coordinator: MoviesSearchCoordinator, moviesUseCase: SearchMoviesUseCase) {

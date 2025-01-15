@@ -16,7 +16,7 @@ final class MoviesSearchFlowCoordinator: MoviesSearchCoordinator{
     
     private weak var navigationController: UINavigationController?
     private weak var moviesQueriesSuggestionsVC: UIViewController?
-    private weak var rootVC: MoviesListViewController?
+    private var rootVC: MoviesListViewController?
 
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
