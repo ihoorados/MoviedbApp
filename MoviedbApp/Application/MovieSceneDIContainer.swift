@@ -44,6 +44,11 @@ final class MovieViewDIContainer: MoviesSearchFlowCoordinatorDependencies {
         return RemoteImageRepository()
     }
     
+    func makeCacheableRemoteImagesRepository() -> ImageRepository {
+        let coreDataImageStorage = CoreDataImagesStorage(currentTime: { Date() })
+        return CacheableRemoteImageRepository(imageCache: coreDataImageStorage)
+    }
+    
     // MARK: - Movies List
 
     // Function to create an instance of MoviesListViewController

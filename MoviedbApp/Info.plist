@@ -3,6 +3,6 @@
 <plist version="1.0">
 <dict>
 	<key>accessTokenAuth</key>
-	<string></string>
+	<string>$(Access_Token_Auth)</string>
 </dict>
 </plist>
