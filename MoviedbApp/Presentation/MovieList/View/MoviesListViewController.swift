@@ -230,6 +230,14 @@ extension MoviesListViewController: TableViewDataSourceAndDelegate{
         
         self.viewModel.didSelectItem(at: indexPath.row)
     }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        
+        cell.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
+        UIView.animate(withDuration: 0.2) {
+            cell.transform = CGAffineTransform.identity
+        }
+    }
 }
 
 
