@@ -10,8 +10,10 @@ enum NetworkError: Error {
     case requestFailed
     case normalError(Error)
     case apiKeyExpired
+    case makeRequestFailed
     case emptyErrorWithStatusCode(String)
-
+    case invalidURL
+    
     var errorDescription: String? {
         switch self {
         case .requestFailed:
@@ -22,6 +24,10 @@ enum NetworkError: Error {
             return "Token Expired"
         case .emptyErrorWithStatusCode(let status):
             return status
+        case .makeRequestFailed:
+            return "Make Request Failed"
+        case .invalidURL:
+            return "Invalid url"
         }
     }
 }

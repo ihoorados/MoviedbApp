@@ -27,7 +27,11 @@ final class RemoteImageRepository: ImageRepository {
     func getImageData(path: String, width: Int) -> AnyPublisher<Data, Error> {
     
         let provider = ImageProvider(imagePath: path, width: width)
-        return client.publisher(provider.makeRequest)
+        guard let request = try? provider.makeRequest() else {
+            return Fail(error: NetworkError.makeRequestFailed).eraseToAnyPublisher()
+        }
+        
+        return client.publisher(request)
             .subscribe(on: backgroundQueue)
             .tryMap(ImageDownloadMapper.map)
             .eraseToAnyPublisher()

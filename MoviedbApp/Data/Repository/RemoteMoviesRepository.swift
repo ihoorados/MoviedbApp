@@ -23,7 +23,11 @@ final class RemoteMoviesRepository: MoviesRepository {
         
         let query = [URLQueryItem(name: "query", value: query), URLQueryItem(name: "page", value: String(page))]
         let provider = MovieProvider(queryForCall: query)
-        return client.publisher(provider.makeRequest)
+        guard let request = try? provider.makeRequest() else {
+            return Fail(error: NetworkError.makeRequestFailed).eraseToAnyPublisher()
+        }
+        
+        return client.publisher(request)
             .tryMap(MovieMapper.map)
             .eraseToAnyPublisher()
             
