@@ -1,6 +1,6 @@
 # MoviedbApp
 
-This is an iOS application that allows users to browse and discover movies from The Movie Database [TMDb](https://www.themoviedb.org). Built following best practices in software development, this app is designed with Clean Architecture and utilizes the MVVM design pattern, ensuring a well-organized and maintainable codebase.
+This is an iOS application that allows users to search movies from The Movie Database [TMDb](https://www.themoviedb.org). Built following best practices in software development, this app is designed with Clean Architecture and utilizes the MVVM design pattern, ensuring a well-organized and maintainable codebase.
 
 ## Architecture Overview
 
@@ -39,6 +39,7 @@ The project follows a structured and layered architecture:
 - [Adapter Pattern](https://github.com/ihoorados/MoviedbApp/tree/master/MoviedbApp/Data/Mapper): Adapts DTO to Domain.
 - [Singleton Pattern](https://github.com/ihoorados/MoviedbApp/blob/master/MoviedbApp/Data/Storage/CoreData/CoreDataStorage.swift): Manages shared resources with a single instance throughout the app lifecycle.
 - [Decorator Pattern](https://github.com/ihoorados/MoviedbApp/blob/master/MoviedbApp/Infrastructure/Network/AuthenticatedNetworkSession.swift): Wraps request signing logic with access tokens, ensuring security and proper authentication.
+- [Repository Pattern](https://github.com/ihoorados/MoviedbApp/tree/master/MoviedbApp/Data/Repository): Centralizes data access, abstracts the data layer, and provides a consistent API for data manipulation, promoting separation of concerns and maintainability.
 
 # Setup
 
