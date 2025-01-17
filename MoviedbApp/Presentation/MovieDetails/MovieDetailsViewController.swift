@@ -40,6 +40,8 @@ class MovieDetailsViewController: UIViewController {
     private let movieImageView: UIImageView = {
        
         let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit
+        imageView.backgroundColor = .tertiarySystemBackground
         return imageView
     }()
     
@@ -62,8 +64,8 @@ class MovieDetailsViewController: UIViewController {
     private let releaseDateLabel: UILabel = {
        
         let label = UILabel()
-        label.textColor = .label
-        label.font = .systemFont(ofSize: 15, weight: .medium)
+        label.textColor = .secondaryLabel
+        label.font = .systemFont(ofSize: 15, weight: .regular)
         return label
     }()
     
@@ -101,12 +103,11 @@ class MovieDetailsViewController: UIViewController {
         
         self.movieImageView.translatesAutoresizingMaskIntoConstraints = false
         self.movieImageView.heightAnchor.constraint(equalToConstant: 200).isActive = true
-        self.movieImageView.backgroundColor = .lightGray
         
         self.verticalStackView.addArrangedSubview(self.movieImageView)
         self.verticalStackView.addArrangedSubview(self.titleLabel)
-        self.verticalStackView.addArrangedSubview(self.releaseDateLabel)
         self.verticalStackView.addArrangedSubview(self.voteLabel)
+        self.verticalStackView.addArrangedSubview(self.releaseDateLabel)
         self.verticalStackView.addArrangedSubview(self.overViewTextView)
     }
     
