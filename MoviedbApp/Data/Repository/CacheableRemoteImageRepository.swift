@@ -23,11 +23,16 @@ final class CacheableRemoteImageRepository: ImageRepository {
     
     func getImageData(path: String, width: Int) -> AnyPublisher<Data, Error> {
         
+        let provider = ImageProvider(imagePath: path, width: width)
+        let request = try? provider.makeRequest()
+        guard let request = try? provider.makeRequest() else {
+            return Fail(error: NetworkError.makeRequestFailed).eraseToAnyPublisher()
+        }
+        
         return imagesCache.fetch(for: path)
             .catch { _ in
                 
-                let provider = ImageProvider(imagePath: path, width: width)
-                return self.client.publisher(provider.makeRequest)
+                return self.client.publisher(request)
                     .subscribe(on: self.backgroundQueue)
                     .tryMap { response in
                         

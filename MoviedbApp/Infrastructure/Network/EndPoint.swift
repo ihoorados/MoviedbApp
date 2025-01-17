@@ -19,6 +19,7 @@ protocol Endpoint {
 }
 
 enum ApiHTTPMethod: String {
+    
     case GET
     case POST
     case PUT
@@ -28,42 +29,53 @@ enum ApiHTTPMethod: String {
 
 extension Endpoint {
     
-    var makeRequest: URLRequest {
+    func makeRequest() throws -> URLRequest {
         
-        var urlComponents = URLComponents(string: baseURLString)
-        var longPath = baseURLString.last != "/" ? "/" : ""
-        
-        longPath.append(path)
-        urlComponents?.path = longPath
-
-        if let queryForCalls = queryForCall {
-            urlComponents?.queryItems = [URLQueryItem]()
-            for queryForCall in queryForCalls {
-                urlComponents?.queryItems?.append(URLQueryItem(name: queryForCall.name, value: queryForCall.value))
-            }
+        guard self.isValidUrl(url: self.baseURLString) else {
+            
+            debugPrint("Error creating URL from baseURLString: \(String(describing: baseURLString))")
+            throw NetworkError.invalidURL
+            //throw NSError(domain: "Invalid url", code: 1, userInfo: [NSLocalizedDescriptionKey: "Invalid url"])
         }
+        
+        let sanitizedPath = !baseURLString.hasSuffix("/") ? "/" + path : path
+        var urlComponents = URLComponents(string: baseURLString+sanitizedPath)
 
-        guard let url = urlComponents?.url else { return URLRequest(url: URL(string: baseURLString)!) }
+        // Set query items safely
+        if let queryForCalls = queryForCall, !queryForCalls.isEmpty {
+            urlComponents?.queryItems = queryForCalls.filter { $0.value != nil && !$0.value!.isEmpty }
+        }
+        
+        guard let url = urlComponents?.url else {
+            
+            debugPrint("Error creating URL from components: \(String(describing: urlComponents))")
+            throw NetworkError.invalidURL
+            //throw NSError(domain: "Invalid url", code: 1, userInfo: [NSLocalizedDescriptionKey: "Invalid url"])
+        }
+        
+        
         var request = URLRequest(url: url)
         request.httpMethod = method.rawValue
-
-        if let headers = headers {
-            for header in headers {
-                request.addValue(header.value, forHTTPHeaderField: header.key)
-            }
-        }
         
-        if let params = params {
+        // Add headers safely
+        headers?.forEach { request.addValue($1, forHTTPHeaderField: $0) }
 
-            let jsonData = try? JSONSerialization.data(withJSONObject: params, options: [])
-            request.httpBody = jsonData
-        }
-
+        // Prepare httpBody only if data is provided
         if let customDataBody = customDataBody {
             request.httpBody = customDataBody
+        } else if let params = params {
+            request.httpBody = try? JSONSerialization.data(withJSONObject: params, options: [])
         }
+        
         return request
     }
 
+
+    func isValidUrl(url: String) -> Bool {
+        let urlRegEx = "^(https?://)?(www\\.)?([-a-z0-9]{1,63}\\.)*?[a-z0-9][-a-z0-9]{0,61}[a-z0-9]\\.[a-z]{2,6}(/[-\\w@\\+\\.~#\\?&/=%]*)?$"
+        let urlTest = NSPredicate(format:"SELF MATCHES %@", urlRegEx)
+        let result = urlTest.evaluate(with: url)
+        return result
+    }
    
 }
