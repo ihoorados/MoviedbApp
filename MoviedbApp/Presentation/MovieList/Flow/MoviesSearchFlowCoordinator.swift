@@ -28,6 +28,9 @@ final class MoviesSearchFlowCoordinator{
     
     func onShowMovieDetails(movie: Movie){
         
+        // In case want to navigation to SwiftUIView
+        // let vc = dependencies.makeMoviesDetailsSwiftUIView(movie: movie)
+        
         let vc = dependencies.makeMoviesDetailsViewController(movie: movie)
         self.navigationController?.pushViewController(vc, animated: true)
     }

@@ -6,11 +6,13 @@
 //
 
 import UIKit
+import SwiftUI
 
 // Protocol to define the dependencies required for the Movies Search Flow Coordinator
 protocol MoviesSearchFlowCoordinatorDependencies {
     func makeMoviesListViewController(callBack: MoviesListViewModelCallBack) -> MoviesListViewController
     func makeMoviesDetailsViewController(movie: Movie) -> UIViewController
+    func makeMoviesDetailsSwiftUIView(movie: Movie) -> UIViewController
 }
 
 // Dependency Injection Container for managing the creation of movie-related components
@@ -67,8 +69,16 @@ final class MovieViewDIContainer: MoviesSearchFlowCoordinatorDependencies {
         return MovieDetailsViewController(viewModel: makeMoviesDetailsViewModel(movie: movie))
     }
     
+    func makeMoviesDetailsSwiftUIView(movie: Movie) -> UIViewController {
+        return UIHostingController(rootView: MovieDetailsSwiftUIView(viewModel: makeMoviesDetailsViewModel(movie: movie)))
+    }
+    
     func makeMoviesDetailsViewModel(movie: Movie) -> MovieDetailsViewModel {
         return MovieDetailsViewModel(movie: movie)
+    }
+    
+    func makeMoviesDetailsViewModel(movie: Movie) -> MovieDetailsSwiftUIViewModel {
+        return MovieDetailsSwiftUIViewModel(viewModel: makeMoviesDetailsViewModel(movie: movie))
     }
 
     // MARK: - Flow Coordinators
