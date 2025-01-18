@@ -22,11 +22,13 @@ final class MoviesListViewModelTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        
+     
+        self.subscribers = [] // Reset subscribers
     }
     
     override func tearDown() {
         
+        self.subscribers = [] // Clear subscribers to avoid memory leaks
         super.tearDown()
     }
     
@@ -37,7 +39,9 @@ final class MoviesListViewModelTests: XCTestCase {
         // Arrange
         let moviesUseCaseMock = MoviesUseCaseMock()
         let expectedMoviesPage = MoviesPage(page: 1, totalPages: 1, movies: [])
-        moviesUseCaseMock.results = Just(expectedMoviesPage).setFailureType(to: Error.self).eraseToAnyPublisher()
+        moviesUseCaseMock.results = Just(expectedMoviesPage)
+            .setFailureType(to: Error.self)
+            .eraseToAnyPublisher()
         
         let sut = MoviesListViewModel(callBack: callBackMock, moviesUseCase: moviesUseCaseMock)
         
@@ -71,7 +75,9 @@ final class MoviesListViewModelTests: XCTestCase {
         // Arrange
         let moviesUseCaseMock = MoviesUseCaseMock()
         let expectedMoviesPage = MoviesPage(page: 1, totalPages: 1, movies: [Movie(id: "1", title: "Test Movie", posterPath: nil, overview: nil, releaseDate: nil, voteCount: 22, voteAvrage: 6.5)])
-        moviesUseCaseMock.results = CurrentValueSubject(expectedMoviesPage).eraseToAnyPublisher()
+        moviesUseCaseMock.results = Just(expectedMoviesPage)
+            .setFailureType(to: Error.self)
+            .eraseToAnyPublisher()
         let sut = MoviesListViewModel(callBack: callBackMock, moviesUseCase: moviesUseCaseMock)
 
         // Act
@@ -104,7 +110,9 @@ final class MoviesListViewModelTests: XCTestCase {
         // Arrange
         let moviesUseCaseMock = MoviesUseCaseMock()
         let expectedMoviesPage = MoviesPage(page: 1, totalPages: 1, movies: [Movie(id: "1", title: "Test Movie", posterPath: nil, overview: nil, releaseDate: nil, voteCount: 22, voteAvrage: 6.5)])
-        moviesUseCaseMock.results = CurrentValueSubject(expectedMoviesPage).eraseToAnyPublisher()
+        moviesUseCaseMock.results = Just(expectedMoviesPage)
+            .setFailureType(to: Error.self)
+            .eraseToAnyPublisher()
         let sut = MoviesListViewModel(callBack: callBackMock, moviesUseCase: moviesUseCaseMock)
         
         // Act
@@ -118,7 +126,10 @@ final class MoviesListViewModelTests: XCTestCase {
         
         // Arrange
         let moviesUseCaseMock = MoviesUseCaseMock()
-        moviesUseCaseMock.results = Result.success(moviePages[0]).publisher.eraseToAnyPublisher()
+        
+        moviesUseCaseMock.results = Just(moviePages[0])
+            .setFailureType(to: Error.self)
+            .eraseToAnyPublisher()
         let sut = MoviesListViewModel(callBack: callBackMock, moviesUseCase: moviesUseCaseMock)
             
         // Create expectation to wait for initial items to be updated
@@ -140,7 +151,9 @@ final class MoviesListViewModelTests: XCTestCase {
         XCTAssertTrue(sut.hasMorePages)
 
         // Now we set up for loading the next page
-        moviesUseCaseMock.results = Just(moviePages[1]).setFailureType(to: Error.self).eraseToAnyPublisher()
+        moviesUseCaseMock.results = Just(moviePages[1])
+            .setFailureType(to: Error.self)
+            .eraseToAnyPublisher()
 
         // Act: Trigger loading the next page
         sut.didLoadNext()
