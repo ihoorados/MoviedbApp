@@ -13,7 +13,7 @@ import SwiftUI
 final class MovieDetailsSwiftUIViewModel: ObservableObject {
     
     var viewModel: MovieDetailsViewModel
-    @Published var image: Image? = Image("placeholder") // Default placeholder image
+    @Published var image: Image? = Image(systemName: "photo") // Default placeholder image
     private var subscribers = Set<AnyCancellable>()
 
     init(viewModel: MovieDetailsViewModel) {
